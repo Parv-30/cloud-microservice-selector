@@ -1,0 +1,85 @@
+services:
+  guided-ui:
+    build: ./services/guided-ui
+    ports:
+      - "8085:8085"
+    depends_on:
+      router-agent:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:8085/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  router-agent:
+    build: ./services/router-agent
+    ports:
+      - "8080:8080"
+    environment:
+      - JAVA_OPTS=-Xmx512m
+    volumes:
+      - ./ml/artifacts:/artifacts:ro
+    depends_on:
+      add-service:
+        condition: service_healthy
+      subtract-service:
+        condition: service_healthy
+      multiply-service:
+        condition: service_healthy
+      divide-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  add-service:
+    build: ./services/add-service
+    ports:
+      - "8081:8081"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  subtract-service:
+    build: ./services/subtract-service
+    ports:
+      - "8082:8082"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  multiply-service:
+    build: ./services/multiply-service
+    ports:
+      - "8083:8083"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  divide-service:
+    build: ./services/divide-service
+    ports:
+      - "8084:8084"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8084/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ml-trainer:
+    build:
+      context: .
+      dockerfile: ml/Dockerfile.trainer
+    profiles:
+      - train
+    volumes:
+      - ./ml:/ml

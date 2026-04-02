@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Arithmetic Router UI</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>Arithmetic Router Front Page</h1>
+    <p class="subtitle">Guided request builder. Router decides operation version from payload shape.</p>
+
+    <section class="card">
+      <h2>Request Builder</h2>
+      <div class="grid two">
+        <label>
+          Operation
+          <select id="operation">
+            <option value="add">add</option>
+            <option value="subtract">subtract</option>
+            <option value="multiply" selected>multiply</option>
+            <option value="divide">divide</option>
+          </select>
+        </label>
+
+        <label>
+          Correlation ID
+          <input id="correlationId" type="text" />
+        </label>
+      </div>
+
+      <div class="row space-between">
+        <strong>Numbers</strong>
+        <button type="button" id="addNumberBtn">+ Add number</button>
+      </div>
+      <div id="numbersList" class="numbers-list"></div>
+      <small class="error" id="numbersError"></small>
+
+      <div class="grid two">
+        <label>
+          Output preference
+          <select id="outputPreference">
+            <option value="none" selected>No preference (fallback to v2 shape)</option>
+            <option value="decimal">Decimal answer</option>
+            <option value="rounded">Round off answer</option>
+          </select>
+        </label>
+      </div>
+      <p class="hint">No version key is sent. Router/ML infers version from payload shape.</p>
+
+      <div class="actions">
+        <button type="button" id="prepareBtn">Prepare Request</button>
+        <button type="button" id="sendBtn" disabled>Confirm & Send</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Prepared Payload</h2>
+      <div id="summary" class="summary"></div>
+      <pre id="payloadPreview">{}</pre>
+    </section>
+
+    <section class="card">
+      <h2>Response</h2>
+      <div id="responseMeta" class="summary"></div>
+      <pre id="responseBody">No response yet.</pre>
+    </section>
+
+    <section class="card">
+      <h2>Error</h2>
+      <div id="errorMeta" class="summary"></div>
+      <pre id="errorBody">No error.</pre>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

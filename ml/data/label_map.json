@@ -1,0 +1,30 @@
+{
+  "label2id": {
+    "add_v1": 0,
+    "add_v2": 1,
+    "add_v3": 2,
+    "divide_v1": 3,
+    "divide_v2": 4,
+    "divide_v3": 5,
+    "multiply_v1": 6,
+    "multiply_v2": 7,
+    "multiply_v3": 8,
+    "subtract_v1": 9,
+    "subtract_v2": 10,
+    "subtract_v3": 11
+  },
+  "id2label": {
+    "0": "add_v1",
+    "1": "add_v2",
+    "2": "add_v3",
+    "3": "divide_v1",
+    "4": "divide_v2",
+    "5": "divide_v3",
+    "6": "multiply_v1",
+    "7": "multiply_v2",
+    "8": "multiply_v3",
+    "9": "subtract_v1",
+    "10": "subtract_v2",
+    "11": "subtract_v3"
+  }
+}

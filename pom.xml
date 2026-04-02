@@ -1,0 +1,18 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.arithmetic</groupId>
+    <artifactId>arithmetic-router-parent</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>services/router-agent</module>
+        <module>services/add-service</module>
+        <module>services/subtract-service</module>
+        <module>services/multiply-service</module>
+        <module>services/divide-service</module>
+    </modules>
+</project>

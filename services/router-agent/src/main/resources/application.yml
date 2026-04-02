@@ -1,0 +1,39 @@
+server:
+  port: 8080
+
+agent:
+  model-path: /artifacts/model.onnx
+  model-config-path: /artifacts/model_config.json
+  downstream-timeout-ms: 3000
+  downstream-retry-max: 2
+  service-urls:
+    add: http://add-service:8081
+    subtract: http://subtract-service:8082
+    multiply: http://multiply-service:8083
+    divide: http://divide-service:8084
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true
+
+spring:
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+
+info:
+  app:
+    name: router-agent
+    version: 1.0.0
+
+logging:
+  pattern:
+    console: "%d{ISO8601} [%X{correlationId}] %-5level %logger{36} - %msg%n"

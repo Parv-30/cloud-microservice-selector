@@ -1,0 +1,18 @@
+server:
+  port: 8082
+
+spring:
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+info:
+  app:
+    name: subtract-service
+    version: 1.0.0
