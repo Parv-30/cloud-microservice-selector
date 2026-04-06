@@ -3,77 +3,169 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Arithmetic Router UI</title>
+  <title>Arithmetic Router</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-  <main class="container">
-    <h1>Arithmetic Router Front Page</h1>
-    <p class="subtitle">Guided request builder. Router decides operation version from payload shape.</p>
+<main class="container">
 
-    <section class="card">
-      <h2>Request Builder</h2>
-      <div class="grid two">
-        <label>
-          Operation
-          <select id="operation">
-            <option value="add">add</option>
-            <option value="subtract">subtract</option>
-            <option value="multiply" selected>multiply</option>
-            <option value="divide">divide</option>
-          </select>
-        </label>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo-row">
+        <div class="logo-dot"></div>
+        <h1>Arithmetic Router</h1>
+      </div>
+      <p class="subtitle">Build and send arithmetic requests from one place.</p>
+    </div>
+    <div class="status-badge">
+      <div class="status-dot"></div>
+      CPU · ONNX 
+    </div>
+  </header>
 
-        <label>
-          Correlation ID
-          <input id="correlationId" type="text" />
-        </label>
+  <div class="layout">
+
+    <!-- Left col: Request Builder -->
+    <div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Request Builder</span>
+          <span class="card-tag">step 1</span>
+        </div>
+        <div class="card-body">
+
+          <div class="field">
+            <label class="field-label" for="operation">Operation</label>
+            <select id="operation">
+              <option value="add">add</option>
+              <option value="subtract">subtract</option>
+              <option value="multiply" selected>multiply</option>
+              <option value="divide">divide</option>
+            </select>
+          </div>
+
+          <!-- Numbers -->
+          <div class="numbers-header">
+            <span class="numbers-label">Numbers</span>
+            <button type="button" id="addNumberBtn" class="btn-ghost">+ add</button>
+          </div>
+          <div id="numbersList" class="numbers-list"></div>
+          <div class="field-error" id="numbersError"></div>
+
+          <!-- Output preference -->
+          <div class="field" style="margin-top:14px">
+            <label class="field-label" for="outputPreference">Output preference</label>
+            <select id="outputPreference">
+              <option value="none" selected>No preference</option>
+              <option value="decimal">Decimal precision</option>
+              <option value="rounded">Round to integer</option>
+            </select>
+          </div>
+
+          <!-- Metadata (v3 extras) -->
+          <details style="margin-top:6px">
+            <summary style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--text2);cursor:pointer;user-select:none;padding:6px 0">
+              ＋ Metadata fields <span style="color:var(--text3)">(optional)</span>
+            </summary>
+            <div style="margin-top:10px;display:grid;gap:10px">
+
+              <div class="field">
+                <label class="field-label" for="metaLabel">label</label>
+                <input type="text" id="metaLabel" placeholder="e.g. cart_total" />
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="metaRequestId">requestId</label>
+                <input type="text" id="metaRequestId" placeholder="e.g. req_abc123" />
+              </div>
+
+              
+
+              <div class="field">
+                <label class="field-label" for="metaRounding">roundingMode</label>
+                <select id="metaRounding">
+                  <option value="none">— none —</option>
+                  <option value="HALF-UP">HALF-UP</option>
+                  <option value="HALF-DOWN">HALF-DOWN</option>
+                  <option value="FLOOR">FLOOR</option>
+                  <option value="CEILING">CEILING</option>
+                  <option value="HALF-EVEN">HALF-EVEN</option>
+                </select>
+              </div>
+
+            </div>
+          </details>
+
+          <div class="field" style="margin-top:16px">
+            <label class="field-label" for="correlationId">Correlation ID</label>
+            <input type="text" id="correlationId" placeholder="auto-generated" />
+            <div class="field-hint">Auto-rotated after each successful request.</div>
+          </div>
+
+          <div class="actions">
+            <button type="button" id="prepareBtn" class="btn-primary">Prepare</button>
+            <button type="button" id="sendBtn" class="btn-send" disabled>⚡ Send Request</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Right col: Payload Preview -->
+    <div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Live Payload Preview</span>
+          <span class="card-tag">what router receives</span>
+        </div>
+        <div class="card-body">
+
+          <!-- Shape indicator -->
+          <div class="shape-indicator">
+            <span id="shapeBadge" class="shape-badge active-v2">payload</span>
+            <span class="shape-arrow">→</span>
+            <span id="shapeDesc" class="shape-desc">Router will process this request payload.</span>
+          </div>
+
+          <div id="payloadPreview" class="payload-preview">
+            <span style="color:var(--text3)">// fill in the form</span>
+          </div>
+
+        </div>
       </div>
 
-      <div class="row space-between">
-        <strong>Numbers</strong>
-        <button type="button" id="addNumberBtn">+ Add number</button>
+      <!-- Response -->
+      <div class="card" style="margin-top:16px">
+        <div class="card-header">
+          <span class="card-title">Response</span>
+          <span class="card-tag">step 2</span>
+        </div>
+        <div class="card-body">
+          <div id="loadingBar" class="loading-bar"></div>
+          <div id="responseMeta" class="meta-row"></div>
+          <pre id="responseBody" class="response-body">No response yet.</pre>
+        </div>
       </div>
-      <div id="numbersList" class="numbers-list"></div>
-      <small class="error" id="numbersError"></small>
 
-      <div class="grid two">
-        <label>
-          Output preference
-          <select id="outputPreference">
-            <option value="none" selected>No preference (fallback to v2 shape)</option>
-            <option value="decimal">Decimal answer</option>
-            <option value="rounded">Round off answer</option>
-          </select>
-        </label>
+      <!-- Error -->
+      <div class="card" style="margin-top:16px">
+        <div class="card-header">
+          <span class="card-title">Error</span>
+          <span class="card-tag">debug</span>
+        </div>
+        <div class="card-body">
+          <div id="errorMeta" class="meta-row"></div>
+          <pre id="errorBody" class="response-body">No error.</pre>
+        </div>
       </div>
-      <p class="hint">No version key is sent. Router/ML infers version from payload shape.</p>
 
-      <div class="actions">
-        <button type="button" id="prepareBtn">Prepare Request</button>
-        <button type="button" id="sendBtn" disabled>Confirm & Send</button>
-      </div>
-    </section>
+    </div>
+  </div>
 
-    <section class="card">
-      <h2>Prepared Payload</h2>
-      <div id="summary" class="summary"></div>
-      <pre id="payloadPreview">{}</pre>
-    </section>
-
-    <section class="card">
-      <h2>Response</h2>
-      <div id="responseMeta" class="summary"></div>
-      <pre id="responseBody">No response yet.</pre>
-    </section>
-
-    <section class="card">
-      <h2>Error</h2>
-      <div id="errorMeta" class="summary"></div>
-      <pre id="errorBody">No error.</pre>
-    </section>
-  </main>
-
-  <script src="/app.js"></script>
+</main>
+<script src="/app.js"></script>
 </body>
 </html>
